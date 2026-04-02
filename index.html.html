@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Smart Packaging Colombia</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f5f0;--white:#fff;--dark:#111410;
+  --green:#1a7a4a;--gl:#e8f5ee;--gm:#2d9e5f;
+  --acc:#f0a500;--al:#fff8e6;
+  --red:#d63031;--rl:#fff0f0;
+  --bd:#e2ddd6;--t:#2a2d27;--t2:#6b6860;--t3:#a8a49e;
+  --r:12px;--rl2:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t);font-family:'Outfit',sans-serif;font-size:15px;min-height:100vh}
+.hdr{background:var(--dark);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.lmark{width:36px;height:36px;background:var(--gm);border-radius:8px;display:flex;align-items:center;justify-content:center}
+.lmark svg{width:20px;height:20px;fill:white}
+.ltxt{font-size:14px;font-weight:700;color:white;letter-spacing:.04em}
+.lsub{font-size:10px;color:rgba(255,255,255,.45);font-family:'JetBrains Mono',monospace}
+.sync-badge{font-size:10px;font-family:'JetBrains Mono',monospace;padding:3px 9px;border-radius:20px;display:flex;align-items:center;gap:4px}
+.ok{background:rgba(92,184,122,0.15);color:#5CB87A}
+.err{background:rgba(214,48,49,.15);color:#d63031}
+.spin{background:rgba(239,159,39,.15);color:#EF9F27}
+.sdot{width:5px;height:5px;border-radius:50%;background:currentColor}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.spin .sdot{animation:blink 1s infinite}
+.hero{background:var(--dark);padding:20px 20px 32px;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:24px;background:var(--bg);border-radius:24px 24px 0 0}
+.htag{display:inline-block;background:rgba(45,158,95,.2);color:#6ee9a0;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;font-family:'JetBrains Mono',monospace;letter-spacing:.1em;margin-bottom:8px}
+.hero-title{font-size:20px;font-weight:700;color:white;margin-bottom:4px}
+.hero-sub{font-size:12px;color:rgba(255,255,255,.5)}
+.content{padding:1rem 1rem 2rem}
+.slabel{font-size:9px;font-family:'JetBrains Mono',monospace;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin:1.25rem 0 .6rem}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.5rem}
+.mcard{background:var(--white);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px}
+.mlabel{font-size:11px;color:var(--t2);margin-bottom:4px}
+.mval{font-size:22px;font-weight:700;color:var(--dark);line-height:1.1}
+.msub{font-size:11px;color:var(--t3);margin-top:3px}
+.mval.green{color:var(--green)}
+.mval.amber{color:#CC7700}
+.mval.red{color:var(--red)}
+.gauge-card{background:var(--white);border:1px solid var(--bd);border-radius:var(--rl2);padding:16px;margin-bottom:.5rem;text-align:center}
+.gauge-title{font-size:13px;font-weight:600;color:var(--dark);margin-bottom:2px}
+.gauge-sub{font-size:11px;color:var(--t3);margin-bottom:10px}
+.gauge-wrap{width:200px;margin:0 auto 6px}
+.gauge-wrap svg{width:100%;display:block}
+.gauge-pct{font-size:28px;font-weight:700;color:var(--dark)}
+.gauge-label{font-size:11px;color:var(--t3);margin-bottom:8px}
+.progress-bar{height:10px;background:var(--bg);border-radius:5px;overflow:hidden;margin:8px 0 6px}
+.progress-fill{height:10px;border-radius:5px;transition:width .8s}
+.meta-detail{display:flex;justify-content:space-between;font-size:11px;color:var(--t2)}
+.chart-card{background:var(--white);border:1px solid var(--bd);border-radius:var(--rl2);padding:14px 16px;margin-bottom:.5rem}
+.chart-title{font-size:13px;font-weight:600;color:var(--dark);margin-bottom:12px}
+.mes-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.mes-row:last-child{margin-bottom:0}
+.mes-nombre{font-size:11px;color:var(--t2);width:50px;flex-shrink:0}
+.mes-track{flex:1;height:7px;background:var(--bg);border-radius:4px;overflow:hidden}
+.mes-fill{height:7px;border-radius:4px}
+.mes-fill.cumplida{background:var(--gm)}
+.mes-fill.en-curso{background:#f0a500}
+.mes-fill.vacia{background:var(--bd)}
+.mes-pct{font-size:10px;font-family:'JetBrains Mono',monospace;width:32px;text-align:right;flex-shrink:0}
+.mes-badge{font-size:9px;padding:2px 7px;border-radius:8px;flex-shrink:0}
+.badge-ok{background:var(--gl);color:var(--green)}
+.badge-curso{background:var(--al);color:#CC7700}
+.badge-nd{background:var(--bg);color:var(--t3)}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.bar-row:last-child{margin-bottom:0}
+.bar-label{font-size:11px;color:var(--t2);width:130px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:7px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar-fill{height:7px;border-radius:4px;background:var(--gm)}
+.bar-num{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--t2);width:55px;text-align:right;flex-shrink:0}
+.alert-item{display:flex;align-items:center;justify-content:space-between;background:var(--rl);border:1px solid rgba(214,48,49,.2);border-radius:var(--r);padding:10px 14px;margin-bottom:6px}
+.alert-ref{font-size:12px;font-weight:500;color:var(--red)}
+.alert-stock{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--red)}
+.no-alerts{background:var(--gl);border:1px solid rgba(45,158,95,.2);border-radius:var(--r);padding:10px 14px;font-size:12px;color:var(--green)}
+#loading{position:fixed;inset:0;background:var(--dark);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:999}
+#loading.off{display:none}
+.ld-logo{font-family:'JetBrains Mono',monospace;font-size:11px;color:#6ee9a0;letter-spacing:.15em}
+.ld-bar{width:160px;height:2px;background:rgba(255,255,255,.1);border-radius:2px}
+.ld-fill{height:2px;background:var(--gm);border-radius:2px;width:0;transition:width .4s}
+.ld-msg{font-size:11px;color:rgba(255,255,255,.4);font-family:'JetBrains Mono',monospace}
+.footer{text-align:center;padding:1rem;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--t3);border-top:1px solid var(--bd)}
+@media(max-width:380px){.mgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="ld-logo">SP / DASHBOARD</div>
+  <div class="ld-bar"><div class="ld-fill" id="ldfill"></div></div>
+  <div class="ld-msg" id="ldmsg">cargando datos...</div>
+</div>
+
+<div class="hdr">
+  <div class="logo">
+    <div class="lmark"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+    <div><div class="ltxt">SMART PACKAGING</div><div class="lsub">COLOMBIA</div></div>
+  </div>
+  <div class="sync-badge ok" id="sync"><div class="sdot"></div><span id="synct">en vivo</span></div>
+</div>
+
+<div class="hero">
+  <div class="htag">// RESUMEN EJECUTIVO</div>
+  <div class="hero-title">Dashboard semanal</div>
+  <div class="hero-sub" id="fecha-sub">Cargando...</div>
+</div>
+
+<div class="content">
+
+  <div class="slabel">ventas</div>
+  <div class="mgrid">
+    <div class="mcard">
+      <div class="mlabel">Esta semana</div>
+      <div class="mval green" id="venta-semana">—</div>
+      <div class="msub" id="ped-semana">— pedidos</div>
+    </div>
+    <div class="mcard">
+      <div class="mlabel">Acumulado mes</div>
+      <div class="mval green" id="venta-mes">—</div>
+      <div class="msub" id="ped-mes">— pedidos</div>
+    </div>
+  </div>
+  <div class="mgrid">
+    <div class="mcard">
+      <div class="mlabel">Comisión del mes</div>
+      <div class="mval amber" id="comision-mes">—</div>
+      <div class="msub" id="pct-comision">—</div>
+    </div>
+    <div class="mcard">
+      <div class="mlabel">Cancelados mes</div>
+      <div class="mval red" id="cancelados">—</div>
+      <div class="msub">pedidos cancelados</div>
+    </div>
+  </div>
+
+  <div class="slabel">meta del mes</div>
+  <div class="gauge-card">
+    <div class="gauge-title" id="meta-titulo">Meta — cargando...</div>
+    <div class="gauge-sub" id="meta-sub"></div>
+    <div class="gauge-wrap">
+      <svg viewBox="0 0 200 115" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="#e2ddd6" stroke-width="14" stroke-linecap="round"/>
+        <path id="g-arc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="#d63031" stroke-width="14" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="251"/>
+        <line id="g-needle" x1="100" y1="100" x2="100" y2="28" stroke="#111410" stroke-width="3" stroke-linecap="round" transform="rotate(-90,100,100)"/>
+        <circle cx="100" cy="100" r="6" fill="#111410"/>
+        <text x="14" y="114" font-size="9" fill="#a8a49e" font-family="sans-serif">0%</text>
+        <text x="170" y="114" font-size="9" fill="#a8a49e" font-family="sans-serif">100%</text>
+      </svg>
+    </div>
+    <div class="gauge-pct" id="gauge-pct-txt">0%</div>
+    <div class="gauge-label">cumplimiento</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%;background:var(--red)"></div>
+    </div>
+    <div class="meta-detail">
+      <span>Real: <strong id="meta-real">—</strong></span>
+      <span>Meta: <strong id="meta-obj">—</strong></span>
+    </div>
+  </div>
+
+  <div class="slabel">cumplimiento histórico</div>
+  <div class="chart-card">
+    <div class="chart-title">Meses 2026</div>
+    <div id="meses-container"><div style="font-size:12px;color:var(--t3)">Cargando...</div></div>
+  </div>
+
+  <div class="slabel">top referencias · unidades vendidas</div>
+  <div class="chart-card">
+    <div id="bars-container"><div style="font-size:12px;color:var(--t3)">Cargando...</div></div>
+  </div>
+
+  <div class="slabel">alertas de inventario</div>
+  <div id="alertas-container"><div style="font-size:12px;color:var(--t3)">Cargando...</div></div>
+
+</div>
+
+<div class="footer" id="footer-ts">Smart Packaging Colombia · Dashboard automático</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxP1mpNNKmTgwRIrO5BEjX21JXaGPO6mkJrZ72oXU9QiS6o6fQwg5dExM66wPtb38Np/exec';
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+function fmt(n){
+  if(n>=1000000) return '$'+(Math.round(n/100000)/10).toFixed(1)+'M';
+  if(n>=1000) return '$'+Math.round(n/1000)+'k';
+  return '$'+Math.round(n).toLocaleString('es-CO');
+}
+function setSync(t,txt){document.getElementById('sync').className='sync-badge '+t;document.getElementById('synct').textContent=txt;}
+function load(p,m){document.getElementById('ldfill').style.width=p+'%';document.getElementById('ldmsg').textContent=m;}
+function finLoad(){load(100,'listo');setTimeout(()=>document.getElementById('loading').classList.add('off'),400);}
+
+function animateGauge(pct){
+  const c = Math.min(100,Math.max(0,pct));
+  const arc = document.getElementById('g-arc');
+  const needle = document.getElementById('g-needle');
+  const totalArc = 251;
+  arc.style.strokeDashoffset = totalArc - (c/100)*totalArc;
+  arc.style.stroke = c>=80?'#2d9e5f':c>=50?'#f0a500':'#d63031';
+  needle.setAttribute('transform',`rotate(${-90+(c/100)*180},100,100)`);
+  document.getElementById('gauge-pct-txt').textContent = Math.round(c)+'%';
+  const fill = document.getElementById('progress-fill');
+  fill.style.width = c+'%';
+  fill.style.background = c>=80?'var(--gm)':c>=50?'#f0a500':'var(--red)';
+}
+
+async function cargarDashboard(){
+  setSync('spin','cargando...');
+  load(20,'conectando...');
+  try{
+    load(50,'leyendo datos...');
+    const res = await fetch(SCRIPT_URL+'?action=dashboard_director');
+    const data = await res.json();
+    load(80,'procesando...');
+    renderDashboard(data);
+    finLoad();
+    setSync('ok','en vivo');
+  }catch(e){
+    load(100,'error de conexión');
+    setTimeout(()=>document.getElementById('loading').classList.add('off'),1000);
+    setSync('err','sin conexión');
+  }
+}
+
+function renderDashboard(data){
+  const hoy = new Date();
+  const dias=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('fecha-sub').textContent = dias[hoy.getDay()]+' '+hoy.getDate()+' de '+meses[hoy.getMonth()]+' '+hoy.getFullYear();
+
+  document.getElementById('venta-semana').textContent = fmt(data.venta_semana||0);
+  document.getElementById('ped-semana').textContent = (data.ped_semana||0)+' pedidos';
+  document.getElementById('venta-mes').textContent = fmt(data.venta_mes||0);
+  document.getElementById('ped-mes').textContent = (data.ped_mes||0)+' pedidos';
+  document.getElementById('comision-mes').textContent = fmt(data.comision_mes||0);
+  const pctCom = data.venta_mes>0?(data.comision_mes/data.venta_mes*100).toFixed(1):'0';
+  document.getElementById('pct-comision').textContent = pctCom+'% sobre ventas';
+  document.getElementById('cancelados').textContent = data.cancelados||0;
+
+  // Velocímetro mes actual
+  const mesActual = hoy.getMonth();
+  const metas = data.metas||[];
+  const metaActual = metas.find(m=>m.mes_idx===mesActual);
+  if(metaActual && metaActual.meta>0){
+    const pct = (metaActual.real/metaActual.meta*100);
+    document.getElementById('meta-titulo').textContent = 'Meta '+MESES[mesActual];
+    document.getElementById('meta-sub').textContent = metaActual.estado||'';
+    document.getElementById('meta-real').textContent = fmt(metaActual.real);
+    document.getElementById('meta-obj').textContent = fmt(metaActual.meta);
+    setTimeout(()=>animateGauge(pct),300);
+  } else {
+    document.getElementById('meta-titulo').textContent = 'Meta '+MESES[mesActual];
+    document.getElementById('meta-sub').textContent = 'Sin datos de meta';
+    animateGauge(0);
+  }
+
+  // Histórico meses
+  const mesesEl = document.getElementById('meses-container');
+  if(!metas.length){
+    mesesEl.innerHTML='<div style="font-size:12px;color:var(--t3)">Sin datos</div>';
+  } else {
+    const maxR = Math.max(...metas.map(m=>m.real||0),1);
+    mesesEl.innerHTML = metas.map(m=>{
+      const pct = m.meta>0?Math.min(100,Math.round(m.real/m.meta*100)):0;
+      const barW = Math.round((m.real||0)/maxR*100);
+      const fc = m.real>=m.meta&&m.meta>0?'cumplida':m.real>0?'en-curso':'vacia';
+      const bc = m.real>=m.meta&&m.meta>0?'badge-ok':m.real>0?'badge-curso':'badge-nd';
+      const bt = m.real>=m.meta&&m.meta>0?'✓ ok':m.real>0?pct+'%':'—';
+      const pc = m.real>=m.meta&&m.meta>0?'var(--green)':m.real>0?'#CC7700':'var(--t3)';
+      return `<div class="mes-row">
+        <span class="mes-nombre">${MESES[m.mes_idx].substring(0,3)}</span>
+        <div class="mes-track"><div class="mes-fill ${fc}" style="width:${barW}%"></div></div>
+        <span class="mes-pct" style="color:${pc}">${m.real>0?pct+'%':'—'}</span>
+        <span class="mes-badge ${bc}">${bt}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // Top refs
+  const refs = data.top_refs||[];
+  const barsEl = document.getElementById('bars-container');
+  if(!refs.length){
+    barsEl.innerHTML='<div style="font-size:12px;color:var(--t3)">Sin datos aún</div>';
+  } else {
+    const max = refs[0].qty;
+    barsEl.innerHTML = refs.map(r=>`<div class="bar-row">
+      <span class="bar-label">${r.ref}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(r.qty/max*100)}%"></div></div>
+      <span class="bar-num">${r.qty.toLocaleString('es-CO')} uds</span>
+    </div>`).join('');
+  }
+
+  // Alertas
+  const alertas = data.alertas||[];
+  const alertasEl = document.getElementById('alertas-container');
+  alertasEl.innerHTML = alertas.length
+    ? alertas.map(a=>`<div class="alert-item"><span class="alert-ref">${a.ref} · ${a.color}</span><span class="alert-stock">${a.stock.toLocaleString('es-CO')} uds</span></div>`).join('')
+    : '<div class="no-alerts">Sin alertas — inventario en niveles normales</div>';
+
+  const ts = new Date();
+  document.getElementById('footer-ts').textContent = 'Actualizado '+ts.toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit'})+' · Smart Packaging Colombia';
+}
+
+cargarDashboard();
+</script>
+</body>
+</html>
